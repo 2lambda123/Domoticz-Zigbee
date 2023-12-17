@@ -697,4 +697,4 @@ def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute):
     selected_color = attribute_mapping.get(attribute)
     
     if selected_color is not None:
-        MajDomoDevice(self, devices, nwkid, ep, "0009", selected_color, attribute_="0020")
+        MajDomoDevice(self, devices, nwkid, ep, "0009", selected_color, Attribute_="0020")
