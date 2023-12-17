@@ -696,5 +696,8 @@ def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute):
     attribute_mapping = TARIF_COLOR_MAPPING.get(optarif, {})
     selected_color = attribute_mapping.get(attribute)
     
+    self.log.logging( "ZLinky", "Debug", "update_P1Meter_ZL_01 %s/%s - %s %s - optarif %s selected_color %s" % (
+        nwkid, ep, cluster, attribute, optarif, selected_color))
+    
     if selected_color is not None:
         MajDomoDevice(self, devices, nwkid, ep, "0009", selected_color, Attribute_="0020")
