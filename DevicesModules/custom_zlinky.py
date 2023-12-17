@@ -3,7 +3,7 @@ import binascii
 from Modules.domoMaj import MajDomoDevice
 from Modules.tools import checkAndStoreAttributeValue
 from Modules.zlinky import (ZLINK_CONF_MODEL, ZLinky_TIC_COMMAND,
-                            convert_kva_to_ampere, decode_STEG, get_optarif,
+                            convert_kva_to_ampere, decode_STEG, get_OPTARIF,
                             linky_mode, store_ZLinky_infos,
                             update_zlinky_device_model_if_needed,
                             zlinky_check_alarm, zlinky_color_tarif,
@@ -691,7 +691,7 @@ def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute, color):
         "BB": {"0100": "BHC", "0102": "HHP", "0104": "WHC", "0106": "WHP", "0108": "RHC", "010a": "RHP"}
     }
     
-    optarif = get_optarif(self, nwkid)[:2]
+    optarif = get_OPTARIF(self, nwkid)[:2]
     
     attribute_mapping = TARIF_COLOR_MAPPING.get(optarif, {})
     selected_color = attribute_mapping.get(attribute)
