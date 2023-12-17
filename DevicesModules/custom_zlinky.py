@@ -682,7 +682,7 @@ def zlinky_cluster_lixee_private(self, Devices, nwkid, ep, cluster, attribut, va
         update_zlinky_device_model_if_needed( self, nwkid )
         
         
-def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute, color):
+def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute):
     
     TARIF_COLOR_MAPPING = {
         "BA": {},
