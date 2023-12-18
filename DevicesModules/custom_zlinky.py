@@ -1,7 +1,7 @@
 import binascii
 
 from Modules.domoMaj import MajDomoDevice
-from Modules.tools import checkAndStoreAttributeValue
+from Modules.tools import checkAndStoreAttributeValue, getAttributeValue
 from Modules.zlinky import (ZLINK_CONF_MODEL, ZLinky_TIC_COMMAND,
                             convert_kva_to_ampere, decode_STEG, get_OPTARIF,
                             linky_mode, store_ZLinky_infos,
@@ -85,6 +85,8 @@ def zlinky_cluster_metering(self, Devices, nwkid, ep, cluster, attribut, value):
         if value == "":
             return
         self.log.logging( "ZLinky", "Debug", "Cluster0702 - 0x0100 ZLinky_TIC Conso: %s " % (value), nwkid, )
+        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut, value)
+        
         checkAndStoreAttributeValue(self, nwkid, ep, cluster, attribut, value)
         zlinky_totalisateur(self, nwkid, attribut, value)
         MajDomoDevice(self, Devices, nwkid, ep, cluster, str(value), Attribute_=attribut)
@@ -92,14 +94,14 @@ def zlinky_cluster_metering(self, Devices, nwkid, ep, cluster, attribut, value):
         store_ZLinky_infos( self, nwkid, 'HCHC', value)
         store_ZLinky_infos( self, nwkid, 'EJPHN', value)
         store_ZLinky_infos( self, nwkid, 'BBRHCJB', value)
-        
-        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut)
 
     elif attribut == "0102":
         # HP or BBRHPJB
         if value == 0:
             return
         self.log.logging( "ZLinky", "Debug", "Cluster0702 - 0x0100 ZLinky_TIC Conso: %s " % (value), nwkid, )
+        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut, value)
+
         checkAndStoreAttributeValue(self, nwkid, ep, cluster, attribut, value)
         zlinky_totalisateur(self, nwkid, attribut, value)
         MajDomoDevice(self, Devices, nwkid, ep, cluster, str(value), Attribute_=attribut)
@@ -107,54 +109,51 @@ def zlinky_cluster_metering(self, Devices, nwkid, ep, cluster, attribut, value):
         store_ZLinky_infos( self, nwkid, 'HCHP', value)
         store_ZLinky_infos( self, nwkid, 'EJPHPM', value)
         store_ZLinky_infos( self, nwkid, 'BBRHCJW', value)
-        
-        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut)
 
     elif attribut == "0104":
         if value == 0:
             return
+        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut, value)
+        
         checkAndStoreAttributeValue(self, nwkid, ep, cluster, attribut, value)
         zlinky_totalisateur(self, nwkid, attribut, value)
         MajDomoDevice(self, Devices, nwkid, "f2", cluster, str(value), Attribute_=attribut)
         store_ZLinky_infos( self, nwkid, 'EASF03', value)
         store_ZLinky_infos( self, nwkid, 'BBRHCJW', value)
-        
-        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut)
 
-        
     elif attribut == "0106":
         if value == 0:
             return
+        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut, value)
+        
         checkAndStoreAttributeValue(self, nwkid, ep, cluster, attribut, value)
         zlinky_totalisateur(self, nwkid, attribut, value)
         MajDomoDevice(self, Devices, nwkid, "f2", cluster, str(value), Attribute_=attribut)
         store_ZLinky_infos( self, nwkid, 'EASF04', value)
         store_ZLinky_infos( self, nwkid, 'BBRHPJW', value)
-        
-        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut)
 
     elif attribut == "0108":
         if value == 0:
             return
+        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut, value)
+        
         checkAndStoreAttributeValue(self, nwkid, ep, cluster, attribut, value)
         zlinky_totalisateur(self, nwkid, attribut, value)
         MajDomoDevice(self, Devices, nwkid, "f3", cluster, str(value), Attribute_=attribut)
         store_ZLinky_infos( self, nwkid, 'EASF05', value)
         store_ZLinky_infos( self, nwkid, 'BBRHCJR', value)
-        
-        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut)
 
     elif attribut == "010a":
         if value == 0:
             return
+        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut, value)
+
         checkAndStoreAttributeValue(self, nwkid, ep, cluster, attribut, value)
         zlinky_totalisateur(self, nwkid, attribut, value)
         MajDomoDevice(self, Devices, nwkid, "f3", cluster, str(value), Attribute_=attribut)
         store_ZLinky_infos( self, nwkid, 'EASF06', value)
         store_ZLinky_infos( self, nwkid, 'BBRHPJR', value)
         
-        update_P1Meter_ZL_01(self, Devices, nwkid, ep, cluster, attribut)
-
     elif attribut == "010c":
         if value == 0:
             return
@@ -682,7 +681,7 @@ def zlinky_cluster_lixee_private(self, Devices, nwkid, ep, cluster, attribut, va
         update_zlinky_device_model_if_needed( self, nwkid )
         
         
-def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute):
+def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute, value):
     
     TARIF_COLOR_MAPPING = {
         "BA": {},
@@ -690,6 +689,10 @@ def update_P1Meter_ZL_01(self, devices, nwkid, ep, cluster, attribute):
         "EJ": {"0100": "HN..", "0102": "PM.."},
         "BB": {"0100": "BHC", "0102": "HHP", "0104": "WHC", "0106": "WHP", "0108": "RHC", "010a": "RHP"}
     }
+    
+    if value == getAttributeValue(self, nwkid, ep, cluster, attribute):
+        # No change, no change to color
+        return
     
     optarif = get_OPTARIF(self, nwkid)[:2]
     
